@@ -36,7 +36,7 @@
     <!--<script src="js/libs/stats.min.js"></script>-->
 
     <canvas id="compare" width="320" height="240" style="display:none"></canvas>
-    <video id="vid" autoplay="" loop="" src="blob:https://www.auduno.com/38a201b5-ca21-4c44-810b-1de2f47aed83" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none;"></video>
+    <video id="vid" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none;"></video>
 
     <script>
       if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -153,6 +153,7 @@
         render();
         // stats.update();
       }
+
       function render() {
         var time = Date.now() * 0.00025;
         var z = 20, d = 150;
