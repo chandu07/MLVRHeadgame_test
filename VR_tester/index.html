@@ -140,7 +140,7 @@
         // controls.handleResize();
       }
 
-      headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});
+      // headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});
 
       var htracker = new headtrackr.Tracker({altVideo : {ogv : "./media/capture5.ogv", mp4 : "./media/capture5.mp4"}});
       htracker.init(videoInput, canvasInput);
@@ -149,6 +149,9 @@
       init();
       animate();
       //
+
+      
+      
       function animate() {
         requestAnimationFrame( animate );
         render();
