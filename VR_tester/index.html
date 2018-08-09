@@ -31,11 +31,12 @@
   <body>
     <div id="container"></div>
     <script src="js/three.js"></script>
-
-    <script src="js/TrackballControls.js"></script>
-
+    <script src="js/headtrackr.js"></script>
     <script src="js/Detector.js"></script>
     <!--<script src="js/libs/stats.min.js"></script>-->
+
+    <canvas id="compare" width="320" height="240" style="display:none"></canvas>
+    <video id="vid" autoplay="" loop="" src="blob:https://www.auduno.com/38a201b5-ca21-4c44-810b-1de2f47aed83" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none;"></video>
 
     <script>
       if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -56,15 +57,15 @@
         scene.background = new THREE.Color( 0x040306 );
         scene.fog = new THREE.Fog( 0x040306, 10, 300 );
         // CONTROLS
-        controls = new THREE.TrackballControls( camera );
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
-        controls.noZoom = false;
-        controls.noPan = false;
-        controls.staticMoving = false;
-        controls.dynamicDampingFactor = 0.15;
-        controls.keys = [ 65, 83, 68 ];
+        // controls = new THREE.TrackballControls( camera );
+        // controls.rotateSpeed = 1.0;
+        // controls.zoomSpeed = 1.2;
+        // controls.panSpeed = 0.8;
+        // controls.noZoom = false;
+        // controls.noPan = false;
+        // controls.staticMoving = false;
+        // controls.dynamicDampingFactor = 0.15;
+        // controls.keys = [ 65, 83, 68 ];
         // TEXTURES
         var textureLoader = new THREE.TextureLoader();
         var texture = textureLoader.load( "textures/disturb.jpg" );
@@ -136,8 +137,14 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize( window.innerWidth, window.innerHeight );
-        controls.handleResize();
+        // controls.handleResize();
       }
+
+      headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});
+
+      var htracker = new headtrackr.Tracker({altVideo : {ogv : "./media/capture5.ogv", mp4 : "./media/capture5.mp4"}});
+      htracker.init(videoInput, canvasInput);
+      htracker.start();
       //
       function animate() {
         requestAnimationFrame( animate );
@@ -159,7 +166,7 @@
         light5.position.z = Math.sin( time * 0.5 ) * d;
         light6.position.x = Math.cos( time * 0.7 ) * d;
         light6.position.z = Math.cos( time * 0.5 ) * d;
-        controls.update( clock.getDelta() );
+        // controls.update( clock.getDelta() );
         renderer.render( scene, camera );
       }
     </script>
