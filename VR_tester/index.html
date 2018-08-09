@@ -157,6 +157,8 @@
         if (event.detection == "CS") {
           camera.position.x = event.x*4;
           camera.position.y = event.y*4;
+          requestAnimationFrame( animate );
+          render();
           // overlayContext.translate(event.x, event.y)
           // overlayContext.rotate(event.angle-(Math.PI/2));
           // overlayContext.strokeStyle = "#00CC00";
