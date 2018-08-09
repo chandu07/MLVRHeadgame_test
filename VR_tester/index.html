@@ -144,8 +144,8 @@
 
       function facetracking_Event(event) {
         if (event.detection == "CS") {
-          camera.lookAt = new THREE.Vector3(event.x, event.y, 50);
-      }
+          controls.target = new THREE.Vector3(event.x, event.y, 50);
+      }}
 
       // headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});
 
