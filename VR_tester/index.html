@@ -145,7 +145,7 @@
       function facetracking_Event(event) {
         if (event.detection == "CS") {
           camera.lookAt = new THREE.Vector3(event.x, event.y, 50);
-      }
+      }}
 
       // headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});
 
@@ -198,7 +198,7 @@
         light6.position.z = Math.cos( time * 0.5 ) * d;
         controls.update( clock.getDelta() );
         renderer.render( scene, camera );
-      };
+      }
     </script>
   </body>
 </html>
