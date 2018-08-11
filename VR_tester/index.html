@@ -37,7 +37,7 @@
     <!--<script src="js/libs/stats.min.js"></script>-->
 
     <canvas id="compare" width="320" height="240" style="display:none"></canvas>
-    <video id="vid" autoplay="" loop="" src="blob:https://www.auduno.com/38a201b5-ca21-4c44-810b-1de2f47aed83" width="320" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none;"></video>
+    <video id="vid" autoplay="" loop="" src="blob:https://www.auduno.com/38a201b5-ca21-4c44-810b-1de2f47aed83" width="320" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none; " muted="muted"></video>
 
     <script>
       if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -144,8 +144,9 @@
 
       function facetracking_Event(event) {
         if (event.detection == "CS") {
+          console.log("this.mouse.target.x");
           controls.target = new THREE.Vector3(event.x*10, event.y*10, 150);
-          controls.lookAt( new THREE.Vector3(0,0,0) );
+          controls.lookAt( new THREE.Vector3(0,0,10) );
       }}
 
       // headtrackr.controllers.three.realisticAbsoluteCameraControl(camera, 27, [0,0,50], new THREE.Vector3(0,0,0), {damping : 0.5});

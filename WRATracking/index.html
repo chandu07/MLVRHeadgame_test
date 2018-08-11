@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script>document.documentElement.className = 'js';</script>
+	</head>
+	<body>
+		<script src="js/vendors/three.min.js"></script>
+		<script src="js/vendors/TweenMax.min.js"></script>
+		<script src="js/headtrackr.js"></script>
+    	<script src="js/Detector.js"></script>
+		<div class="content">
+			<!-- The canvas where ThreeJs renders the WebGL -->
+			<canvas id="scene" class="clickable"></canvas>
+		</div>
+
+		<canvas id="compare" width="320" height="240" style="display:none"></canvas>
+    	<video id="vid" autoplay="true" loop="" src="blob:https://www.auduno.com/38a201b5-ca21-4c44-810b-1de2f47aed83" width="320" height="240" style="position: absolute; top: 50px; z-index: 100001; display: none;" muted="muted"></video>
+
+    	<script type="text/javascript">
+
+    		var videoInput = document.getElementById('vid');
+      		var canvasInput = document.getElementById('compare');
+
+      		window.addEventListener( 'facetrackingEvent', facetracking_Event, false );
+
+    		function facetracking_Event(event) {
+				
+		        if (event.detection == "CS") {
+		        	parameterUpdate(event.x, event.y);
+		      }}
+
+    		var htracker = new headtrackr.Tracker({altVideo : {ogv : "./media/capture5.ogv", mp4 : "./media/capture5.mp4"}});
+		    htracker.init(videoInput, canvasInput);
+		    htracker.start();
+
+    	</script>
+
+    	<script>
+
+    		var ww = window.innerWidth;
+			var wh = window.innerHeight;
+			var isMobile = ww < 500;
+			var mouse = {
+			    position: new THREE.Vector2(ww * 0.5, wh * 0.7),
+			    ratio: new THREE.Vector2(0, 0),
+			    target: new THREE.Vector2(ww * 0.5, wh * 0.7)
+			  };
+
+			function Tunnel() {
+			  this.init();
+			  this.createMesh();
+
+			  this.handleEvents();
+
+			  window.requestAnimationFrame(this.render.bind(this));
+			}
+
+			Tunnel.prototype.init = function() {
+
+			  this.speed = 1;
+			  this.prevTime = 0;
+			  console.log("Init tunnel");
+			  
+			  console.log(mouse);
+
+			  this.renderer = new THREE.WebGLRenderer({
+			    antialias: true,
+			    canvas: document.querySelector("#scene")
+			  });
+			  this.renderer.setSize(ww, wh);
+
+			  this.camera = new THREE.PerspectiveCamera(15, ww / wh, 0.01, 100);
+			  this.camera.rotation.y = Math.PI;
+			  this.camera.position.z = 0.35;
+
+			  this.scene = new THREE.Scene();
+			  this.scene.fog = new THREE.Fog(0x000d25,0.05,1.6);
+
+			  var light = new THREE.HemisphereLight( 0xe9eff2, 0x01010f, 1 );
+			  this.scene.add( light );
+
+			  this.addParticle();
+			};
+
+			Tunnel.prototype.addParticle = function() {
+			  this.particles = [];
+			  for(var i = 0; i < (isMobile?70:150); i++){
+			    this.particles.push(new Particle(this.scene));
+			  }
+			};
+
+			Tunnel.prototype.createMesh = function() {
+			  var points = [];
+			  var i = 0;
+			  var geometry = new THREE.Geometry();
+			  
+			  this.scene.remove(this.tubeMesh)
+
+			  for (i = 0; i < 5; i += 1) {
+			    points.push(new THREE.Vector3(0, 0, 2.5 * (i / 4)));
+			  }
+			  points[4].y = -0.06;
+
+			  this.curve = new THREE.CatmullRomCurve3(points);
+			  this.curve.type = "catmullrom";
+
+			  geometry = new THREE.Geometry();
+			  geometry.vertices = this.curve.getPoints(70);
+			  this.splineMesh = new THREE.Line(geometry, new THREE.LineBasicMaterial());
+
+			  this.tubeMaterial = new THREE.MeshBasicMaterial({
+			    side: THREE.BackSide,
+			    color:0xffffff
+			  });
+
+			  this.tubeGeometry = new THREE.TubeGeometry(this.curve, 70, 0.02, 30, false);
+			  this.tubeGeometry_o = this.tubeGeometry.clone();
+			  this.tubeMesh = new THREE.Mesh(this.tubeGeometry, this.tubeMaterial);
+
+			  this.scene.add(this.tubeMesh);
+
+			};
+
+			Tunnel.prototype.handleEvents = function() {
+			  window.addEventListener('resize', this.onResize.bind(this), false);
+			};
+
+			parameterUpdate = function(positionx, positiony) {
+				if(mouse){
+				console.log(positionx, positiony);
+				var x = Number(map(positionx, 100, 225, ww,0));
+				var y = Number(map(positiony, 100, 190,0,wh));
+			    mouse.target.x = Math.round(x);
+			    mouse.target.y = Math.round(y);
+				}
+		      };
+
+		    map = function (num, in_min, in_max, out_min, out_max) {
+				return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+			}
+
+			Tunnel.prototype.colorChange = function() {
+			  this.mousedown = true;
+			  TweenMax.to(this.scene.fog.color, 0.6, {
+			    r: 1,
+			    g: 1,
+			    b: 1
+			  });
+			  TweenMax.to(this.tubeMaterial.color, 0.6, {
+			    r:0,
+			    g:0,
+			    b:0
+			  });
+			};
+
+			Tunnel.prototype.onResize = function() {
+			  ww = window.innerWidth;
+			  wh = window.innerHeight;
+			  
+			  isMobile = ww < 500;
+
+			  this.camera.aspect = ww / wh;
+			  this.camera.updateProjectionMatrix();
+			  this.renderer.setSize(ww, wh);
+			};
+
+			Tunnel.prototype.updateCameraPosition = function() {
+
+			  mouse.position.x += (mouse.target.x - mouse.position.x) / 30;
+			  mouse.position.y += (mouse.target.y - mouse.position.y) / 30;
+
+			  mouse.ratio.x = (mouse.position.x / ww);
+			  mouse.ratio.y = (mouse.position.y / wh);
+
+			  this.camera.rotation.z = ((mouse.ratio.x) * 1 - 0.05);
+			  this.camera.rotation.y = Math.PI - (mouse.ratio.x * 0.3 - 0.15);
+			  this.camera.position.x = ((mouse.ratio.x) * 0.044 - 0.025);
+			  this.camera.position.y = ((mouse.ratio.y) * 0.044 - 0.025);
+
+			};
+
+			Tunnel.prototype.updateCurve = function() {
+			  var i = 0;
+			  var index = 0;
+			  var vertice_o = null;
+			  var vertice = null;
+			  for (i = 0; i < this.tubeGeometry.vertices.length; i += 1) {
+			    vertice_o = this.tubeGeometry_o.vertices[i];
+			    vertice = this.tubeGeometry.vertices[i];
+			    index = Math.floor(i / 30);
+			    vertice.x += ((vertice_o.x + this.splineMesh.geometry.vertices[index].x) - vertice.x) / 15;
+			    vertice.y += ((vertice_o.y + this.splineMesh.geometry.vertices[index].y) - vertice.y) / 15;
+			  }
+			  this.tubeGeometry.verticesNeedUpdate = true;
+
+			  this.curve.points[2].x = 0.6 * (1 - mouse.ratio.x) - 0.3;
+			  this.curve.points[3].x = 0;
+			  this.curve.points[4].x = 0.6 * (1 - mouse.ratio.x) - 0.3;
+
+			  this.curve.points[2].y = 0.6 * (1 - mouse.ratio.y) - 0.3;
+			  this.curve.points[3].y = 0;
+			  this.curve.points[4].y = 0.6 * (1 - mouse.ratio.y) - 0.3;
+
+			  this.splineMesh.geometry.verticesNeedUpdate = true;
+			  this.splineMesh.geometry.vertices = this.curve.getPoints(70);
+			};
+
+			Tunnel.prototype.render = function(time) {
+
+			  this.updateCameraPosition();
+
+			  this.updateCurve();
+			  
+			  for(var i = 0; i < this.particles.length; i++){
+			    this.particles[i].update(this);
+			    if(this.particles[i].burst && this.particles[i].percent > 1){
+			      this.particles.splice(i, 1);
+			      i--;
+			    }
+			  }
+			  
+			  this.renderer.render(this.scene, this.camera);
+
+			  window.requestAnimationFrame(this.render.bind(this));
+			};
+
+			function Particle(scene, burst, time) {
+			  var radius = Math.random()*0.002 + 0.0003;
+			  var geom = this.icosahedron;
+			  var random = Math.random();
+			  if(random > 0.9){
+			    geom = this.cube;
+			  } else if(random > 0.8){
+			    geom = this.sphere;
+			  }
+			  var range = 50;
+			  if(burst){
+			    this.color = new THREE.Color("hsl("+(time / 50)+",100%,60%)");
+			  } else {
+			    var offset = 180;
+			    this.color = new THREE.Color("hsl("+(Math.random()*range+offset)+",100%,80%)");
+			  }
+			  var mat = new THREE.MeshPhongMaterial({
+			    color: this.color,
+			    shading:THREE.FlatShading
+			  });
+			  this.mesh = new THREE.Mesh(geom, mat);
+			  this.mesh.scale.set(radius, radius, radius);
+			  this.mesh.position.set(0,0,1.5);
+			  this.percent = burst ? 0.2 : Math.random();
+			  this.burst = burst ? true : false;
+			  this.offset = new THREE.Vector3((Math.random()-0.5)*0.025, (Math.random()-0.5)*0.025, 0);
+			  this.speed = Math.random()*0.004 + 0.0002;
+			  if (this.burst){
+			    this.speed += 0.003;
+			    this.mesh.scale.x *= 1.4;
+			    this.mesh.scale.y *= 1.4;
+			    this.mesh.scale.z *= 1.4;
+			  }
+			  this.rotate = new THREE.Vector3(-Math.random()*0.1+0.01,0,Math.random()*0.01);
+			  
+			  this.pos = new THREE.Vector3(0,0,0);
+			  scene.add(this.mesh);
+			}
+
+			Particle.prototype.cube = new THREE.BoxBufferGeometry(1, 1, 1);
+			Particle.prototype.sphere = new THREE.SphereBufferGeometry(1, 6, 6 );
+			Particle.prototype.icosahedron = new THREE.IcosahedronBufferGeometry(1,0);
+			Particle.prototype.update = function (tunnel) {
+			  
+			  this.percent += this.speed * (this.burst?1:tunnel.speed);
+			  
+			  this.pos = tunnel.curve.getPoint(1 - (this.percent%1)) .add(this.offset);
+			  this.mesh.position.x = this.pos.x;
+			  this.mesh.position.y = this.pos.y;
+			  this.mesh.position.z = this.pos.z;
+			  this.mesh.rotation.x += this.rotate.x;
+			  this.mesh.rotation.y += this.rotate.y;
+			  this.mesh.rotation.z += this.rotate.z;
+			};
+
+
+			window.onload = function() {
+				console.log("on load event");
+			  window.tunnel = new Tunnel();
+
+			};
+
+    	</script>
+		
+	</body>
+</html>
