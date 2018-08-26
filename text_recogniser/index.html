@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NNOnTheWeb</title>
+    <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Create three equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 33.33%;
+        padding:70px 10px;
+        height: 500px; /* Should be removed. Only for demonstration */
+    }
+
+    @media screen and (max-width: 1002px) {
+     .column {
+        float: left;
+        width: 100%;
+        padding:70px 10px;
+        height: 450px; /* Should be removed. Only for demonstration */
+        }
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    </style>
+</head>
+<body>
+    <div class="row">
+      <div class="column" style="background-color:#ccc;">
+        <table align="center" cellspacing="0" cellpadding="1" border="0">
+            <caption>
+                <h3>Step 1: Prepare data</h3>
+                <p>Type a Letter or Number that you are training the Neural Net for. 
+                <input id="training_data" type="text" name="Letter" maxlength="1" size="1" align="right"><br></p>
+            </caption>
+            <tr>
+                <td>
+                    <canvas id="p1" width="200" height="200" style="border: 1px solid black; cursor: default; display: block;"></canvas>
+                    </td>
+                <td>
+                    <p>Use your mouse and draw the letter in this box. Press the below button to add the data to the training set.</p>
+                    <button id="trainingData">Push the data</button>
+                    </td>
+            </tr>
+        </table>
+      </div>
+
+      <div class="column" style="background-color:#bbb;">
+        <table width="100%" align="center">
+            <caption>
+                <h3>Step 2: Training the Model</h3>
+                <button id="train">Train</button>
+            </caption>
+            <tr>
+                <td align="center">
+                    <table>
+                        <tbody id="TResults" style="display: none">
+                            <tr>
+                                <th>Error</th>
+                                <td id="err"></td>
+                            </tr>
+                            <tr>
+                                <th>Iterations</th>
+                                <td id="iterations"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+      </div>
+
+      <div class="column" style="background-color:#aaa;">
+        <table align="center">
+            <caption>
+                <h3>Step 3: Evaluate Model</h3>
+                <p><button id="guess">Guess</button></p>
+            </caption>
+            <tr>
+                <td align="center">
+                    <canvas id="g" width="200" height="200" style="border: 1px solid black; cursor: default; display: block;"></canvas>
+                </td>
+            </tr>
+            <table>
+                <tbody id="Guesswork" style="display: none">
+                    <tr>
+                        <th>It is most likely</th>
+                        <td id="Guess"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </table>
+      </div>
+    </div>
+ 
+    <script src="js/brain.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/recogniser.js"></script>
+</body>
+</html>

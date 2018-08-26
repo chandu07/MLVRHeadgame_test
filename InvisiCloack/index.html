@@ -55,7 +55,7 @@ function initialize()
 	
 	keyboard = new Keyboard();
 	
-	// let loader = new THREE.TextureLoader();
+	let loader = new THREE.TextureLoader();
 	
 	// textures from http://www.humus.name/
 	let skyMaterialArray1 = [
@@ -71,27 +71,27 @@ function initialize()
 		skyMaterialArray1 );
 	scene.add(skyMesh1);
 	
-	// // floor
-	// let floorGeometry = new THREE.PlaneGeometry(10,10);
-	// let floorMaterial = new THREE.MeshBasicMaterial({ 
-	// 	map: loader.load( 'images/color-grid.png' )
-	// });
-	// let floorMesh = new THREE.Mesh( floorGeometry, floorMaterial );
-	// floorMesh.rotation.x = -Math.PI/2;
-	// scene.add( floorGeometry );
+	// floor
+	let floorGeometry = new THREE.PlaneGeometry(10,10);
+	let floorMaterial = new THREE.MeshBasicMaterial({ 
+		map: loader.load( 'images/color-grid.png' )
+	});
+	let floorMesh = new THREE.Mesh( floorGeometry, floorMaterial );
+	floorMesh.rotation.x = -Math.PI/2;
+	scene.add( floorMesh );
 	
-	// let cubeGeometry = new THREE.BoxGeometry(1,1,1);
-	// let materialArray = [
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/xpos.png") } ),
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/xneg.png") } ),
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/ypos.png") } ),
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/yneg.png") } ),
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/zpos.png") } ),
-	// 	new THREE.MeshBasicMaterial( { map: loader.load("images/zneg.png") } ),
-	// ];
-	// let cubeMesh = new THREE.Mesh( cubeGeometry, materialArray );
-	// cubeMesh.position.y = 0.5;
-	// scene.add( cubeMesh );
+	let cubeGeometry = new THREE.BoxGeometry(1,1,1);
+	let materialArray = [
+		new THREE.MeshBasicMaterial( { map: loader.load("images/xpos.png") } ),
+		new THREE.MeshBasicMaterial( { map: loader.load("images/xneg.png") } ),
+		new THREE.MeshBasicMaterial( { map: loader.load("images/ypos.png") } ),
+		new THREE.MeshBasicMaterial( { map: loader.load("images/yneg.png") } ),
+		new THREE.MeshBasicMaterial( { map: loader.load("images/zpos.png") } ),
+		new THREE.MeshBasicMaterial( { map: loader.load("images/zneg.png") } ),
+	];
+	let cubeMesh = new THREE.Mesh( cubeGeometry, materialArray );
+	cubeMesh.position.y = 0.5;
+	scene.add( cubeMesh );
 	
 	// plane = new THREE.Mesh(
 	// 	new THREE.PlaneGeometry(2,2),
